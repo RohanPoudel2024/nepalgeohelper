@@ -1,0 +1,24 @@
+﻿# Node modules
+node_modules/
+npm-debug.log*
+
+# OS files  
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Development files
+npm.txt
+countDistricts.js
+nepalDistrictAnalyzer.js
+districtCounter.js
+example.js
+postaldata.json
+fuzzy-test.js
+VERIFICATION.md
+
+# Logs
+*.log
