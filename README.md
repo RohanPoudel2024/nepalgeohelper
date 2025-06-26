@@ -9,7 +9,7 @@ A comprehensive Node.js package for Nepal geographic data including districts, p
 
 ## Features
 
-- **Complete Nepal District Data** - All 80 districts with detailed information
+- **Complete Nepal District Data** - All 75 districts with detailed information
 - **Postal Code Integration** - 917+ postal codes with post office details
 - **Smart Search** - Fuzzy search for districts, post offices, and postal codes
 - **Address Validation** - Comprehensive Nepal address validation
@@ -71,7 +71,7 @@ Returns an array of all districts in Nepal.
 
 ```javascript
 const districts = geo.getDistricts();
-// Returns: Array of 80 district objects with name, postOfficeCount, and postOffices
+// Returns: Array of 75 district objects with name, postOfficeCount, and postOffices
 ```
 
 #### `getDistrict(name)`
@@ -115,7 +115,7 @@ Returns statistical information about Nepal's geographic data.
 
 ```javascript
 const stats = geo.getStatistics();
-// Returns: { totalDistricts: 80, totalPostOffices: 917, averagePostOfficesPerDistrict }
+// Returns: { totalDistricts: 75, totalPostOffices: 917, averagePostOfficesPerDistrict }
 ```
 
 ### Fuzzy Search Examples
@@ -296,7 +296,7 @@ function validateShippingAddress(address) {
 
 ## Data Sources
 
-- **Districts**: Based on Nepal's official administrative divisions (80 districts)
+- **Districts**: Based on Nepal's official administrative divisions (75 districts)
 - **Postal Codes**: Nepal Postal Service official data (917+ post offices)
 - **Geographic Information**: Government of Nepal verified sources
 

@@ -1,7 +1,7 @@
 const NepalGeoHelper = require('./index');
 
 function runTests() {
-    console.log('🧪 Running Nepal Geo Helper Tests...\n');
+    console.log('Running Nepal Geo Helper Tests...\n');
     
     let passed = 0;
     let failed = 0;
@@ -10,14 +10,14 @@ function runTests() {
         try {
             const result = testFn();
             if (result) {
-                console.log(`✅ ${name}`);
+                console.log(`[PASS] ${name}`);
                 passed++;
             } else {
-                console.log(`❌ ${name} - Test failed`);
+                console.log(`[FAIL] ${name} - Test failed`);
                 failed++;
             }
         } catch (error) {
-            console.log(`❌ ${name} - Error: ${error.message}`);
+            console.log(`[ERROR] ${name} - Error: ${error.message}`);
             failed++;
         }
     }
@@ -32,7 +32,19 @@ function runTests() {
     // Test 2: Get districts
     test('Get all districts', () => {
         const districts = geo.getDistricts();
-        return Array.isArray(districts) && districts.length > 70;
+        console.log(`\nActual district count: ${districts.length}`);
+        
+        // Log all district names to check for duplicates
+        const districtNames = districts.map(d => d.name).sort();
+        console.log('All districts:', districtNames);
+        
+        // Check for duplicates
+        const duplicates = districtNames.filter((name, index) => districtNames.indexOf(name) !== index);
+        if (duplicates.length > 0) {
+            console.log('Duplicate districts found:', duplicates);
+        }
+        
+        return Array.isArray(districts) && districts.length === 75;
     });
 
     // Test 3: Get specific district
@@ -98,7 +110,8 @@ function runTests() {
     // Test 12: District utilities
     test('District utilities', () => {
         const districtNames = geo.districts.getDistrictNames();
-        return Array.isArray(districtNames) && districtNames.length > 70;
+        console.log(`\nDistrict names count: ${districtNames.length}`);
+        return Array.isArray(districtNames) && districtNames.length === 75; // Should be exactly 75
     });
 
     // Test 13: Postal utilities
@@ -163,20 +176,19 @@ function runTests() {
         const pokhra = geo.searchLocations('pokhra'); // typo for pokhara
         const chitwan = geo.searchLocations('chitawan'); // typo for chitwan
         
-        // Should find some results for these common typos
         return pokhra.length > 0 && chitwan.length > 0;
     });
 
     // Summary
-    console.log(`\n📊 Test Results:`);
-    console.log(`✅ Passed: ${passed}`);
-    console.log(`❌ Failed: ${failed}`);
-    console.log(`📈 Success Rate: ${Math.round((passed / (passed + failed)) * 100)}%`);
+    console.log('\nTest Results:');
+    console.log(`Passed: ${passed}`);
+    console.log(`Failed: ${failed}`);
+    console.log(`Success Rate: ${Math.round((passed / (passed + failed)) * 100)}%`);
 
     if (failed === 0) {
-        console.log('\n🎉 All tests passed! Package is working correctly.');
+        console.log('\nAll tests passed! Package is working correctly.');
     } else {
-        console.log('\n⚠️  Some tests failed. Please check the implementation.');
+        console.log('\nSome tests failed. Please check the implementation.');
     }
 
     return failed === 0;
