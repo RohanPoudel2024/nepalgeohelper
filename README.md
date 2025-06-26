@@ -4,18 +4,19 @@ A comprehensive Node.js package for Nepal geographic data including districts, p
 
 [![npm version](https://badge.fury.io/js/nepalgeohelper.svg)](https://badge.fury.io/js/nepalgeohelper)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js CI](https://github.com/RohanPoudel2024/nepalgeohelper/actions/workflows/node.js.yml/badge.svg)](https://github.com/RohanPoudel2024/nepalgeohelper/actions/workflows/node.js.yml)
+[![Downloads](https://img.shields.io/npm/dm/nepalgeohelper.svg)](https://www.npmjs.com/package/nepalgeohelper)
+[![GitHub Stars](https://img.shields.io/github/stars/RohanPoudel2024/nepalgeohelper.svg)](https://github.com/RohanPoudel2024/nepalgeohelper)
 
 ## Features
 
-- 🗺️ **Complete Nepal District Data** - All 77+ districts with detailed information
-- 📮 **Postal Code Integration** - 900+ postal codes with post office details
-- 🔍 **Smart Search** - Fuzzy search for districts, post offices, and postal codes
-- ✅ **Address Validation** - Comprehensive Nepal address validation
-- 📊 **Geographic Statistics** - Detailed analytics about Nepal's postal system
-- 🎯 **TypeScript Support** - Full TypeScript definitions included
-- 🚀 **Zero Dependencies** - Lightweight and fast
-- 📱 **Developer Friendly** - Simple API with extensive documentation
+- **Complete Nepal District Data** - All 80 districts with detailed information
+- **Postal Code Integration** - 917+ postal codes with post office details
+- **Smart Search** - Fuzzy search for districts, post offices, and postal codes
+- **Address Validation** - Comprehensive Nepal address validation
+- **Geographic Statistics** - Detailed analytics about Nepal's postal system
+- **TypeScript Support** - Full TypeScript definitions included
+- **Zero Dependencies** - Lightweight and fast
+- **Developer Friendly** - Simple API with extensive documentation
 
 ## Installation
 
@@ -43,9 +44,9 @@ console.log(`${kathmandu.name} has ${kathmandu.postOfficeCount} post offices`);
 const postalInfo = geo.getPostalInfo('44600');
 console.log(`Postal code 44600 belongs to ${postalInfo.district}`);
 
-// Search locations
-const results = geo.searchLocations('Pokhara');
-console.log(`Found ${results.length} results for Pokhara`);
+// Search with fuzzy matching (handles typos)
+const results = geo.searchLocations('ktm'); // Finds "Kathmandu"
+console.log(`Found ${results.length} results for ktm`);
 
 // Validate address
 const address = {
@@ -70,7 +71,7 @@ Returns an array of all districts in Nepal.
 
 ```javascript
 const districts = geo.getDistricts();
-// Returns: Array of district objects with name, postOfficeCount, and postOffices
+// Returns: Array of 80 district objects with name, postOfficeCount, and postOffices
 ```
 
 #### `getDistrict(name)`
@@ -90,11 +91,12 @@ const info = geo.getPostalInfo('44600');
 ```
 
 #### `searchLocations(query)`
-Searches for districts and post offices matching the query.
+Searches for districts and post offices with fuzzy matching.
 
 ```javascript
-const results = geo.searchLocations('Kath');
-// Returns: Array of search results with relevance scores
+const results = geo.searchLocations('ktm'); // Finds "Kathmandu"
+const results2 = geo.searchLocations('lalitpurr'); // Finds "Lalitpur"
+// Returns: Array of search results with relevance scores and match types
 ```
 
 #### `validateAddress(address)`
@@ -113,7 +115,26 @@ Returns statistical information about Nepal's geographic data.
 
 ```javascript
 const stats = geo.getStatistics();
-// Returns: { totalDistricts, totalPostOffices, averagePostOfficesPerDistrict }
+// Returns: { totalDistricts: 80, totalPostOffices: 917, averagePostOfficesPerDistrict }
+```
+
+### Fuzzy Search Examples
+
+The search function handles common typos and abbreviations:
+
+```javascript
+// Abbreviations
+geo.searchLocations('ktm');      // → Kathmandu
+geo.searchLocations('bhkt');     // → Bhaktapur
+geo.searchLocations('pok');      // → Pokharinarayanshthan
+
+// Typos
+geo.searchLocations('lalitpurr'); // → Lalitpur
+geo.searchLocations('pokhra');    // → Related districts
+geo.searchLocations('chitawan');  // → Chitawan
+
+// Partial matches
+geo.searchLocations('kath');      // → Kathmandu
 ```
 
 ### Utility Classes
@@ -160,14 +181,14 @@ const results = geo.validator.batchValidate([address1, address2]);
 #### Geo Search (`geo.search`)
 
 ```javascript
-// Advanced search
+// Advanced search with filters
 const results = geo.search.advancedSearch({
     query: 'Kathmandu',
     postOfficeType: 'G.P.O.',
     limit: 10
 });
 
-// Get search suggestions
+// Get search suggestions for autocomplete
 const suggestions = geo.search.getSuggestions('Kath');
 ```
 
@@ -226,14 +247,19 @@ app.post('/validate-address', (req, res) => {
 });
 ```
 
-### Form Auto-completion
+### Form Auto-completion with Fuzzy Search
 
 ```javascript
 // Get district suggestions for autocomplete
 function getDistrictSuggestions(input) {
     const geo = new NepalGeoHelper();
-    return geo.search.getSuggestions(input, { type: 'district', limit: 5 });
+    return geo.searchLocations(input).filter(r => r.type === 'district');
 }
+
+// Usage examples:
+getDistrictSuggestions('ktm');    // Returns Kathmandu
+getDistrictSuggestions('kath');   // Returns Kathmandu  
+getDistrictSuggestions('lalitpurr'); // Returns Lalitpur
 ```
 
 ### Data Analysis
@@ -241,19 +267,38 @@ function getDistrictSuggestions(input) {
 ```javascript
 // Analyze postal distribution
 const geo = new NepalGeoHelper();
-const stats = geo.postal.getPostalStatistics();
+const stats = geo.getStatistics();
 
-console.log('Post Office Distribution:');
-Object.entries(stats.postOfficeTypes).forEach(([type, count]) => {
-    console.log(`${type}: ${count} offices`);
-});
+console.log(`Total Districts: ${stats.totalDistricts}`);
+console.log(`Total Post Offices: ${stats.totalPostOffices}`);
+console.log(`Average Post Offices per District: ${stats.averagePostOfficesPerDistrict}`);
+```
+
+### E-commerce Integration
+
+```javascript
+// Validate shipping address
+function validateShippingAddress(address) {
+    const geo = new NepalGeoHelper();
+    const validation = geo.validateAddress(address);
+    
+    if (!validation.isValid) {
+        return {
+            success: false,
+            errors: validation.errors,
+            suggestions: validation.suggestions
+        };
+    }
+    
+    return { success: true, normalizedAddress: validation.normalizedAddress };
+}
 ```
 
 ## Data Sources
 
-- **Districts**: Based on Nepal's administrative divisions
-- **Postal Codes**: Nepal Postal Service official data
-- **Geographic Information**: Government of Nepal sources
+- **Districts**: Based on Nepal's official administrative divisions (80 districts)
+- **Postal Codes**: Nepal Postal Service official data (917+ post offices)
+- **Geographic Information**: Government of Nepal verified sources
 
 ## Contributing
 
@@ -263,7 +308,7 @@ We welcome contributions! Please read our [Contributing Guide](CONTRIBUTING.md) 
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/nepalgeohelper.git
+git clone https://github.com/RohanPoudel2024/nepalgeohelper.git
 cd nepalgeohelper
 
 # Install dependencies
@@ -273,31 +318,46 @@ npm install
 npm test
 
 # Run examples
-npm run example
+node examples/usage.js
 ```
 
 ## Testing
 
 ```bash
-# Run all tests
+# Run all tests (20 test cases)
 npm test
 
-# Run specific test
-node test/district-utils.test.js
+# Expected output: 20 tests passing, 100% success rate
 ```
 
 ## Performance
 
 - **Load time**: < 50ms for initial data loading
-- **Search performance**: < 5ms for typical queries
+- **Search performance**: < 5ms for typical queries  
 - **Memory usage**: < 10MB for complete dataset
-- **Package size**: < 2MB
+- **Package size**: ~26KB compressed, 200KB unpacked
+- **Zero dependencies**: No external packages required
 
 ## Browser Support
 
 While primarily designed for Node.js, the package can be bundled for browser use with tools like Webpack or Browserify.
 
 ## Changelog
+
+### v1.1.2 (Latest)
+- Enhanced fuzzy search capabilities
+- Improved TypeScript definitions
+- Performance optimizations
+- Better error handling and suggestions
+
+### v1.1.1
+- Bug fixes and stability improvements
+- Updated postal data
+
+### v1.1.0
+- Added comprehensive fuzzy matching
+- Improved search algorithms
+- Enhanced validation features
 
 ### v1.0.0
 - Initial release
@@ -311,15 +371,15 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## Support
 
-- 📧 Email: your.email@example.com
-- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/nepalgeohelper/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/yourusername/nepalgeohelper/discussions)
+- Email: yitsmerohan@gmail.com
+- Issues: [GitHub Issues](https://github.com/RohanPoudel2024/nepalgeohelper/issues)
+- Discussions: [GitHub Discussions](https://github.com/RohanPoudel2024/nepalgeohelper/discussions)
+- NPM: [nepalgeohelper](https://www.npmjs.com/package/nepalgeohelper)
 
-## Related Projects
+## Keywords
 
-- [nepal-administrative-divisions](https://github.com/example/nepal-admin) - Administrative boundaries
-- [nepal-location-picker](https://github.com/example/location-picker) - React location picker component
+Nepal, geography, postal codes, districts, address validation, fuzzy search, location data, Nepal postal service, geographic utilities, address autocomplete
 
 ---
 
-Made with ❤️ for Nepal's developer community
+Made with ❤️ for Nepal's developer community 🇳🇵
