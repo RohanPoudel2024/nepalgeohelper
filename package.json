@@ -28,7 +28,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/RohanPoudel2024/nepalgeohelper.git"
+    "url": "git+https://github.com/RohanPoudel2024/nepalgeohelper.git"
   },
   "bugs": {
     "url": "https://github.com/RohanPoudel2024/nepalgeohelper/issues"
