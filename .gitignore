@@ -18,11 +18,12 @@ districtCounter.js
 example.js
 postaldata.json
 fuzzy-test.js
+STATUS.md
 VERIFICATION.md
 
 # Logs
 *.log
 
 # Temporary files
-GITHUB_PACKAGES_SETUP.md
 package.json.backup
+*.backup

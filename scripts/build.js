@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 
 function buildPackage() {
-    console.log('🔨 Building Nepal Geo Helper package...\n');
+    console.log('Building Nepal Geo Helper package...\n');
 
     try {
         // Ensure data directory exists
@@ -16,13 +16,13 @@ function buildPackage() {
         }
 
         // Check if geo-data module can load data
-        console.log('📊 Checking data loading...');
+        console.log('Checking data loading...');
         const GeoData = require('../lib/geo-data');
         const geoData = new GeoData();
-        console.log(`✅ Loaded ${geoData.getStatistics().totalDistricts} districts and ${geoData.getStatistics().totalPostOffices} post offices`);
+        console.log(`Loaded ${geoData.getStatistics().totalDistricts} districts and ${geoData.getStatistics().totalPostOffices} post offices`);
 
         // Validate package structure
-        console.log('\n📁 Validating package structure...');
+        console.log('\nValidating package structure...');
         const requiredFiles = [
             '../index.js',
             '../index.d.ts',
@@ -40,9 +40,9 @@ function buildPackage() {
         requiredFiles.forEach(file => {
             const filePath = path.join(__dirname, file);
             if (fs.existsSync(filePath)) {
-                console.log(`✅ ${file}`);
+                console.log(`Found: ${file}`);
             } else {
-                console.log(`❌ ${file} - Missing!`);
+                console.log(`Missing: ${file}`);
                 allFilesExist = false;
             }
         });
@@ -52,7 +52,7 @@ function buildPackage() {
         }
 
         // Run tests
-        console.log('\n🧪 Running tests...');
+        console.log('\nRunning tests...');
         const { runTests } = require('../test');
         const testsPassed = runTests();
 
@@ -63,26 +63,26 @@ function buildPackage() {
         // Generate data file if it doesn't exist
         const dataFile = path.join(dataDir, 'postal-data.json');
         if (!fs.existsSync(dataFile)) {
-            console.log('\n📄 Generating data file...');
+            console.log('\nGenerating data file...');
             // The geo-data module will create it automatically
-            console.log(`✅ Data file created at ${dataFile}`);
+            console.log(`Data file created at ${dataFile}`);
         }
 
         // Check package.json validity
-        console.log('\n📦 Validating package.json...');
+        console.log('\nValidating package.json...');
         const packageJson = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8'));
         
         const requiredFields = ['name', 'version', 'description', 'main', 'keywords', 'author', 'license'];
         const missingFields = requiredFields.filter(field => !packageJson[field]);
         
         if (missingFields.length > 0) {
-            console.log(`⚠️  Missing package.json fields: ${missingFields.join(', ')}`);
+            console.log(`Missing package.json fields: ${missingFields.join(', ')}`);
         } else {
-            console.log('✅ package.json is valid');
+            console.log('package.json is valid');
         }
 
-        console.log('\n🎉 Build completed successfully!');
-        console.log('\n📋 Next steps:');
+        console.log('\nBuild completed successfully!');
+        console.log('\nNext steps:');
         console.log('1. Update package.json with your details (author, repository, etc.)');
         console.log('2. Test the package: npm test');
         console.log('3. Publish to npm: npm publish');
@@ -90,7 +90,7 @@ function buildPackage() {
         return true;
 
     } catch (error) {
-        console.error(`\n❌ Build failed: ${error.message}`);
+        console.error(`\nBuild failed: ${error.message}`);
         return false;
     }
 }
