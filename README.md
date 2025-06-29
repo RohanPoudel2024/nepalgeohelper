@@ -118,6 +118,39 @@ const stats = geo.getStatistics();
 // Returns: { totalDistricts: 75, totalPostOffices: 917, averagePostOfficesPerDistrict }
 ```
 
+#### `getDistrictsByProvince()`
+Returns districts grouped by Nepal's 7 provinces.
+
+```javascript
+const provinces = geo.getDistrictsByProvince();
+console.log(provinces['Bagmati Province']); // Districts in Bagmati Province
+```
+
+#### `getMajorDistrictsWithCoordinates()`
+Returns major districts with geographic coordinates.
+
+```javascript
+const coordDistricts = geo.getMajorDistrictsWithCoordinates();
+console.log(coordDistricts.find(d => d.name === 'Kathmandu'));
+// { name: 'Kathmandu', lat: 27.7172, lng: 85.3240, isCapital: true, ... }
+```
+
+#### `validatePostalCodeWithSuggestions(postalCode)`
+Enhanced postal code validation with intelligent error suggestions.
+
+```javascript
+const validation = geo.validatePostalCodeWithSuggestions('4460');
+// Returns: { isValid: false, suggestions: ['Try adding a leading zero: 04460'] }
+```
+
+#### `getDistrictAnalytics(districtName)`
+Comprehensive district analysis with rankings and geographic data.
+
+```javascript
+const analytics = geo.getDistrictAnalytics('Kathmandu');
+// Returns detailed analytics including province, rankings, borders, coordinates
+```
+
 ### Fuzzy Search Examples
 
 The search function handles common typos and abbreviations:
@@ -344,7 +377,15 @@ While primarily designed for Node.js, the package can be bundled for browser use
 
 ## Changelog
 
-### v1.1.2 (Latest)
+### v1.2.0 (Latest) - Enhanced Geographic Features
+- **Province Grouping**: Districts organized by Nepal's 7 provinces
+- **Geographic Coordinates**: Major districts with lat/lng coordinates  
+- **Enhanced Postal Validation**: Intelligent suggestions for common errors
+- **District Analytics**: Comprehensive district information and rankings
+- **Population Categories**: Districts grouped by population size
+- **Border Districts**: Neighboring district information
+
+### v1.1.2
 - Enhanced fuzzy search capabilities
 - Improved TypeScript definitions
 - Performance optimizations
