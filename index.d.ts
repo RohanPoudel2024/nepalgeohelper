@@ -42,6 +42,21 @@ export interface Statistics {
     averagePostOfficesPerDistrict: number;
 }
 
+export interface PackageInfo {
+    name: string;
+    version: string;
+    description: string;
+    author: string;
+    lastUpdated: string;
+    dataStats: Statistics;
+}
+
+export interface DistrictWithPostalCount {
+    name: string;
+    postalCodeCount: number;
+    mainPostalCode: string | null;
+}
+
 export interface SearchResult {
     type: 'district' | 'postOffice';
     name: string;
@@ -50,12 +65,47 @@ export interface SearchResult {
     relevance: number;
 }
 
+export interface DistrictAnalytics extends District {
+    province: string;
+    coordinates: { lat: number; lng: number } | null;
+    isCapital: boolean;
+    populationCategory: string;
+    borderDistricts: string[];
+    rankings: {
+        postOfficeCount: number;
+        totalDistricts: number;
+    };
+    postalCodeRange: {
+        min: number;
+        max: number;
+    };
+    officeTypes: { [key: string]: number };
+}
+
+export interface PostalCodeValidation {
+    isValid: boolean;
+    postalCode: string;
+    info?: PostalInfo;
+    message?: string;
+    suggestions?: string[];
+    errors?: string[];
+}
+
+export interface DistrictWithCoordinates extends District {
+    lat: number;
+    lng: number;
+    population: string;
+    isCapital: boolean;
+    populationCategory?: string;
+}
+
 export declare class DistrictUtils {
     getAllDistricts(): District[];
     getDistrictByName(name: string): District | null;
     getTotalDistricts(): number;
     getDistrictNames(): string[];
     searchDistricts(query: string): District[];
+    getDistrictsByProvince(): { [key: string]: District[] };
 }
 
 export declare class PostalUtils {
@@ -64,6 +114,8 @@ export declare class PostalUtils {
     getTotalPostOffices(): number;
     getAveragePostOfficesPerDistrict(): number;
     searchPostalCodes(query: string): PostOffice[];
+    getAllPostalCodes(): string[];
+    isValidPostalCode(postalCode: string): boolean;
 }
 
 export declare class LocationValidator {
@@ -82,6 +134,13 @@ export declare class GeoSearch {
 export declare class NepalGeoHelper {
     constructor();
     
+    geoData: any;
+    districts: DistrictUtils;
+    postal: PostalUtils;
+    validator: LocationValidator;
+    search: GeoSearch;
+    
+    // Main methods
     getDistricts(): District[];
     getDistrict(name: string): District | null;
     getPostalInfo(postalCode: string): PostalInfo | null;
@@ -89,10 +148,22 @@ export declare class NepalGeoHelper {
     validateAddress(address: Address): ValidationResult;
     getStatistics(): Statistics;
     
-    districts: DistrictUtils;
-    postal: PostalUtils;
-    validator: LocationValidator;
-    search: GeoSearch;
+    // New utility methods
+    getAllPostalCodes(): string[];
+    getDistrictsByProvince(): { [key: string]: District[] };
+    isValidPostalCode(postalCode: string): boolean;
+    getRandomDistrict(): District;
+    getDistrictsWithPostalCounts(): DistrictWithPostalCount[];
+    getPackageInfo(): PackageInfo;
+
+    // Enhanced methods
+    getDistrictsByProvince(): { [province: string]: District[] };
+    getDistrictProvince(districtName: string): string | null;
+    getMajorDistrictsWithCoordinates(): DistrictWithCoordinates[];
+    getDistrictsByPopulation(category?: 'large' | 'medium' | 'small' | 'all'): District[] | DistrictWithCoordinates[];
+    validatePostalCodeWithSuggestions(postalCode: string): PostalCodeValidation;
+    getBorderingDistricts(districtName: string): District[];
+    getDistrictAnalytics(districtName: string): DistrictAnalytics | null;
 }
 
 // Static methods
